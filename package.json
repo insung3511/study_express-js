@@ -1,0 +1,22 @@
+{
+  "name": "express_study",
+  "version": "1.0.0",
+  "description": "Study of Express.js",
+  "license": "ISC",
+  "type": "commonjs",
+  "main": "dist/app.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/app.js",
+    "dev": "ts-node app.ts"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.3.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
