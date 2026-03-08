@@ -31,6 +31,19 @@
 - `(req as any).user` 패턴으로 미들웨어 간 데이터 전달
 - 404 핸들러 패턴
 
+### [완료] Chapter 2.5: 라우팅 & 미들웨어 심화 이해 (개념 정리)
+- **Express 내부 동작 원리**: 미들웨어 스택(배열) 순회 + 경로 패턴 매칭
+- **`next()` 동작 원리**: 스택의 다음 인덱스로 이동하는 함수 (자동 탐색이 아닌 순차 순회)
+- **Router 내부 스택**: Router도 미니 Express 앱으로, 자체 스택을 가짐
+- **Routing의 4가지 역할**: 경로 매칭, HTTP 메서드 매칭, 미들웨어 체인 구성, 경로 접두사 관리
+- **경로 접두사 제거**: `app.use('/users', router)` 시 라우터 내부에서 `/users`가 벗겨짐 (상대 경로)
+- **HTTP 메서드별 특성**: GET/DELETE(Body X), POST/PUT/PATCH(Body O) → Body 유무에 따라 validation 미들웨어 적용 여부 결정
+- **미들웨어 vs Route Handler**: 둘 다 같은 함수. `next()` 호출 여부가 유일한 차이
+- **실무 디렉토리 구조 이해**: Layered(계층별) vs Feature-based(기능별) 구조
+- **Feature-based 레이어 이해**: routes → validation → controller → service → model 각 레이어의 역할과 분리 이유
+- **`app.ts` vs `server.ts` 분리**: 테스트 시 app만 import하기 위한 패턴
+- **`common/types/`**: 공통 타입 정의, `express.d.ts`로 Request 타입 확장 (`as any` 제거)
+
 ---
 
 ## 다음 학습 목표
@@ -113,3 +126,4 @@
 | 날짜 | 업데이트 내용 |
 |------|--------------|
 | 2026-03-07 | 초기 작성. Chapter 1, 2 완료 기록. |
+| 2026-03-07 | Chapter 2.5 추가. 라우팅/미들웨어 심화 개념, 실무 디렉토리 구조(Layered vs Feature-based), 각 레이어 역할, app.ts/server.ts 분리 이유, types 디렉토리 역할 학습 완료. |
