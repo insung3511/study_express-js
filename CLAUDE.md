@@ -9,7 +9,7 @@
 
 - 4월 인턴십을 앞두고 Express.js + TypeScript 실무 역량을 키우는 중
 - 목표: 미니 프로젝트를 혼자 설계·구현할 수 있는 수준으로 빠르게 끌어올리기
-- 현재 날짜: 2026-03-07 기준으로 약 4주 남음
+- 현재 날짜: 2026-03-09 기준으로 약 3.5주 남음
 - 스터디 방식: Claude와 함께 코드 작성 → 개념 설명 → 실습 반복
 
 ---
@@ -44,9 +44,9 @@
 - **`app.ts` vs `server.ts` 분리**: 테스트 시 app만 import하기 위한 패턴
 - **`common/types/`**: 공통 타입 정의, `express.d.ts`로 Request 타입 확장 (`as any` 제거)
 
-### [진행 중] Chapter 3: 에러 핸들링 & 환경변수 & Zod 검증 (`chapter3/`)
+### [완료] Chapter 3: 에러 핸들링 & 환경변수 (`chapter3/`)
 
-**에러 핸들링 (완료)**
+**에러 핸들링**
 - 에러 핸들링 없는 코드의 문제점 직접 시연: 200 OK에 빈 객체 반환, HTML 스택 트레이스 노출 등
 - `(err, req, res, next)` **4인자 에러 미들웨어**: Express가 에러 미들웨어로 인식하는 핵심 조건
 - 일반 미들웨어(3인자) vs 에러 미들웨어(4인자) 구분 이해
@@ -58,7 +58,7 @@
 - 초기 버전(`app-with-error-handling.ts`): 각 라우트에서 직접 if문으로 검증 + `res.status().json()` → 중복 코드 문제
 - 최종 버전(`app.ts`): AppError + 에러 미들웨어로 리팩토링 → 에러 처리 로직이 한 곳에 집중
 
-**환경변수 (완료)**
+**환경변수**
 - `dotenv` 설치 및 `.env` 파일 분리: `PORT=4000`, `NODE_ENV=development`
 - `server.ts`에서 `dotenv.config()`를 가장 먼저 호출해야 하는 이유
 - `types/env.d.ts`로 `process.env`에 TypeScript 타입 입히기: `declare namespace NodeJS` 패턴
@@ -66,28 +66,29 @@
 - `NODE_ENV`에 따른 에러 응답 분기: 개발 환경에서는 스택 트레이스 포함, 운영 환경에서는 숨김
 - `.env` 파일은 `.gitignore`에 추가하여 Git에 올리지 않는 원칙
 
-**`app.ts` / `server.ts` 분리 (완료)**
+**`app.ts` / `server.ts` 분리**
 - `app.ts`: Express 앱 설정만 (미들웨어, 라우트, 에러 핸들러) → `export default app`
 - `server.ts`: `dotenv.config()` + `app.listen()` → 서버 시작만 담당
 - 분리 이유: 테스트 시 app만 import하여 supertest로 테스트 가능
 
-**Zod 입력 검증 (미완료 — 다음 세션에서 진행)**
-- Zod 설치 (`npm install zod`)
-- 스키마 작성 (users.schema.ts)
-- 검증 미들웨어 작성 (validate.ts) — Zod 스키마를 Express 미들웨어로 연결
-- app.ts의 if문 검증을 Zod 미들웨어로 교체
-- 테스트
+### [완료] Chapter 3-Zod: Zod 입력 검증 (`chapter3-zod/`)
+- **Zod는 Express 전용이 아닌 범용 검증 라이브러리**라는 점 이해 — Express에는 미들웨어로 수동 연결
+- `z.object()`, `z.string().min()`, `z.string().email()` 등으로 스키마 정의
+- `parse()` vs `safeParse()` 차이: 미들웨어에서는 `safeParse()` 선호 (에러를 직접 제어하기 위해)
+- `z.infer<typeof schema>`로 스키마에서 TypeScript 타입 자동 추출 → 컴파일타임과 런타임 검증 일치
+- Zod의 기본 동작: 알 수 없는 필드를 자동으로 strip (보안 이점)
+- **검증 미들웨어 패턴**: 고차 함수 `validate(schema)`가 Express 미들웨어를 반환, `safeParse()` 실패 시 `AppError(400)` throw
+- `req.body === undefined` 가드 추가 — body 없는 요청에 대한 방어
+- Zod v4에서는 `.errors`가 아닌 `.issues`로 에러 목록에 접근
+- 기존 if문 검증을 `validate(createUserSchema)` 미들웨어로 완전 교체
+- `interface User extends CreateUserInput`으로 스키마 타입 재사용
+- curl 테스트 6종 전체 통과: 정상 생성, 빈 이름, 잘못된 이메일, 복합 에러, 초과 필드 strip, body 없음
 
 ---
 
 ## 다음 학습 목표
 
-### [다음] Chapter 3 이어서: Zod 입력 검증
-- 스키마 정의 → `parse` / `safeParse`
-- Express 미들웨어로 Zod 연결하는 패턴
-- 기존 if문 검증을 Zod로 교체
-
-### [예정] Chapter 4: Prisma ORM + 데이터베이스
+### [다음] Chapter 4: Prisma ORM + 데이터베이스
 - Prisma 스키마 정의, `npx prisma migrate dev`
 - SQLite로 시작 → PostgreSQL 전환
 - Controller / Service / Repository 레이어 분리
@@ -117,6 +118,7 @@
 - 새로운 패턴이나 깨달음이 생기면 해당 챕터 항목에 추가할 것
 - `README.md`의 커리큘럼 표 상태(⬜ → ✅)도 함께 업데이트할 것
 - 미니 프로젝트 시작 전 학습자가 혼자 설계할 수 있는지 점검할 것
+- **[자동 업데이트 규칙]** 수업 내용이 변경되거나 진도가 진행될 때마다 이 파일(`CLAUDE.md`)과 `README.md`를 자동으로 업데이트할 것 — 학습자가 별도로 요청하지 않아도 챕터 완료, 새 개념 학습, 커리큘럼 변경 시 즉시 반영
 
 ### 코드 스타일 (이 프로젝트 기준)
 - TypeScript strict 모드
@@ -141,7 +143,7 @@
 }
 ```
 
-앞으로 추가 예정: `zod`, `prisma`, `jsonwebtoken`, `bcrypt`, `jest`, `supertest`
+앞으로 추가 예정: `prisma`, `jsonwebtoken`, `bcrypt`, `jest`, `supertest`
 
 ---
 
@@ -153,3 +155,4 @@
 | 2026-03-07 | Chapter 2.5 추가. 라우팅/미들웨어 심화 개념, 실무 디렉토리 구조(Layered vs Feature-based), 각 레이어 역할, app.ts/server.ts 분리 이유, types 디렉토리 역할 학습 완료. |
 | 2026-03-08 | 코드 스타일에 app.ts/server.ts 분리 원칙 추가. Chapter 3부터 적용. |
 | 2026-03-08 | Chapter 3 에러 핸들링 & 환경변수 완료 기록. Zod 검증은 다음 세션에서 이어서 진행. |
+| 2026-03-09 | Chapter 3-Zod 완료 기록. Zod 입력 검증 전체 학습 완료 (스키마, safeParse, 검증 미들웨어, 리팩토링, 테스트 6종). 자동 업데이트 규칙 추가. |
