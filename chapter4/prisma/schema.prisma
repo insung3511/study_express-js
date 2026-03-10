@@ -1,0 +1,23 @@
+// Prisma 스키마 파일
+// 이 파일 하나로: DB 테이블 생성 + TypeScript 타입 자동 생성
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ───── 여기서부터 모델 정의 ─────
+
+// User 모델 = DB의 users 테이블이 됨
+model User {
+  id        Int      @id @default(autoincrement())  // 자동 증가 PK
+  email     String   @unique                         // 유니크 제약조건
+  name      String                                   // 필수 필드
+  createdAt DateTime @default(now())                 // 생성 시 자동 기록
+  updatedAt DateTime @updatedAt                      // 수정 시 자동 갱신
+}
