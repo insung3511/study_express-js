@@ -9,7 +9,7 @@
 
 - 4월 인턴십을 앞두고 Express.js + TypeScript 실무 역량을 키우는 중
 - 목표: 미니 프로젝트를 혼자 설계·구현할 수 있는 수준으로 빠르게 끌어올리기
-- 현재 날짜: 2026-03-09 기준으로 약 3.5주 남음
+- 현재 날짜: 2026-03-13 기준으로 약 3주 남음
 - 스터디 방식: Claude와 함께 코드 작성 → 개념 설명 → 실습 반복
 
 ---
@@ -84,14 +84,35 @@
 - `interface User extends CreateUserInput`으로 스키마 타입 재사용
 - curl 테스트 6종 전체 통과: 정상 생성, 빈 이름, 잘못된 이메일, 복합 에러, 초과 필드 strip, body 없음
 
+### [진행중] Chapter 4: Prisma ORM + 데이터베이스 (`chapter4/`)
+
+**Prisma ORM 기초**
+- **Prisma의 3가지 구성요소**: `schema.prisma`(모델 정의) → `prisma migrate dev`(DB 테이블 생성) → `prisma generate`(TypeScript 타입 생성)
+- `generator client`: PrismaClient 타입을 `generated/prisma/` 폴더에 자동 생성
+- `datasource db`: DB 종류(SQLite)와 연결 URL(`env("DATABASE_URL")`)을 설정
+- `@id @default(autoincrement())`: 자동 증가 PK, `@unique`: 유니크 제약조건, `@updatedAt`: 수정 시 자동 갱신
+- `findUnique()`: 없는 데이터 조회 시 **에러가 아닌 `null` 반환** — `findUniqueOrThrow()`와 구분
+- `findMany()`: 결과 없으면 빈 배열 `[]` 반환
+- 메모리 배열(`users.push()`) → Prisma(`prisma.user.create()`)로 전환: 서버 재시작해도 데이터 유지
+
+**Controller / Service / Repository 3-레이어 분리**
+- **레이어 분리 이유**: 같은 비즈니스 로직을 REST API, CLI, 크론잡, 메시지 큐 등에서 재사용하기 위함
+- **의존성 방향**: Controller → Service → Repository → Prisma(DB) — 항상 아래 방향으로만, 역방향 금지
+- **Repository 레이어**: Prisma를 직접 사용하는 유일한 파일. 비즈니스 로직 없음. `findAllUsers()`, `findUserById()`, `createUser()` 등 순수 DB 접근 함수
+- **Service 레이어**: 비즈니스 규칙 담당. HTTP(`req`/`res`)를 모르고, Prisma도 모름. Repository를 통해서만 DB 접근. `getUserById()`에서 없으면 `AppError(404)` throw
+- **Controller 레이어**: HTTP 요청/응답만 담당. `req.body`에서 데이터 추출 → Service 호출 → `res.json()`으로 응답
+- **Routes 파일**: URL 패턴 + 미들웨어(Zod 검증) + Controller 연결
+- Service에 `req`/`res`가 없으므로 **테스트 시 Repository를 mock하면 DB 없이 비즈니스 로직만 테스트 가능**
+- `getUserById()`를 `updateUser()`와 `deleteUser()`에서 재사용: 존재 확인 로직 중복 제거
+- 리팩토링 전 `app.ts`(119줄, 모든 게 섞임) → 리팩토링 후 역할별 5개 파일로 분리
+
 ---
 
 ## 다음 학습 목표
 
-### [다음] Chapter 4: Prisma ORM + 데이터베이스
-- Prisma 스키마 정의, `npx prisma migrate dev`
-- SQLite로 시작 → PostgreSQL 전환
-- Controller / Service / Repository 레이어 분리
+### [다음] Chapter 4 남은 내용
+- SQLite → PostgreSQL 전환
+- 관계형 모델 (1:N, N:M 관계)
 
 ### [예정] Chapter 5: JWT 인증 & 보안
 - `jsonwebtoken` 토큰 발급 / 검증
@@ -156,3 +177,4 @@
 | 2026-03-08 | 코드 스타일에 app.ts/server.ts 분리 원칙 추가. Chapter 3부터 적용. |
 | 2026-03-08 | Chapter 3 에러 핸들링 & 환경변수 완료 기록. Zod 검증은 다음 세션에서 이어서 진행. |
 | 2026-03-09 | Chapter 3-Zod 완료 기록. Zod 입력 검증 전체 학습 완료 (스키마, safeParse, 검증 미들웨어, 리팩토링, 테스트 6종). 자동 업데이트 규칙 추가. |
+| 2026-03-13 | Chapter 4 Prisma ORM 기초 + Controller/Service/Repository 3-레이어 분리 학습 기록. app.ts(119줄)→역할별 5개 파일 리팩토링 완료. curl 테스트 7종 통과. |

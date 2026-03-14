@@ -26,9 +26,9 @@
 
 | 주제 | 핵심 개념 | 상태 |
 |------|-----------|------|
-| Prisma ORM | 스키마 정의, Migration, CRUD | ⬜ 예정 |
+| Prisma ORM | 스키마 정의, Migration, CRUD | ✅ 완료 |
 | 실제 DB 연동 | SQLite → PostgreSQL 전환 | ⬜ 예정 |
-| 프로젝트 구조 | Controller / Service / Repository 레이어 분리 | ⬜ 예정 |
+| 프로젝트 구조 | Controller / Service / Repository 레이어 분리 | ✅ 완료 |
 
 ### Week 3 — 인증 & 보안 (3/22 ~ 3/28)
 
