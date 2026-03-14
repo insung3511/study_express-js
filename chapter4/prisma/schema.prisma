@@ -13,6 +13,20 @@ datasource db {
 
 // ───── 여기서부터 모델 정의 ─────
 
+model Post {
+  id        Int      @id @default(autoincrement())
+  title     String                                   // 게시글 제목
+  content   String?                                  // 본문 (선택 — ?가 nullable)
+  published Boolean  @default(false)                 // 공개 여부 (기본값: 비공개)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  // ───── 관계 설정 ─────
+  authorId  Int                                      // FK: User의 id를 참조
+  author    User     @relation(fields: [authorId], references: [id])
+
+  tags      Tag[]    @relation("PostTags")           // 다대다 관계
+}
+
 // User 모델 = DB의 users 테이블이 됨
 model User {
   id        Int      @id @default(autoincrement())  // 자동 증가 PK
@@ -20,4 +34,12 @@ model User {
   name      String                                   // 필수 필드
   createdAt DateTime @default(now())                 // 생성 시 자동 기록
   updatedAt DateTime @updatedAt                      // 수정 시 자동 갱신
+
+  posts     Post[]  
+}
+
+model Tag {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  posts Post[] @relation("PostTags")
 }

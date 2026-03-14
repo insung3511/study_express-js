@@ -2,6 +2,7 @@
 
 import express, { Request, Response, NextFunction } from 'express';
 import userRouter from './users/user.routes';
+import postRouter from './posts/post.routes';
 import AppError from './errors/AppError';
 
 const app = express();
@@ -11,6 +12,7 @@ app.use(express.json());
 
 // 라우터 등록
 app.use('/users', userRouter);
+app.use('/posts', postRouter);
 
 // 에러 핸들링 미들웨어 (4인자 — 반드시 마지막에!)
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
