@@ -1,0 +1,8 @@
+node_modules
+# Keep environment variables out of version control
+.env
+
+/generated/prisma
+
+# SQLite DB 파일 (chapter4에서 전환 시 남은 파일)
+*.db
