@@ -1,0 +1,46 @@
+// Prisma 스키마 파일
+// 이 파일 하나로: DB 테이블 생성 + TypeScript 타입 자동 생성
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ───── 여기서부터 모델 정의 ─────
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  title     String                                   // 게시글 제목
+  content   String?                                  // 본문 (선택 — ?가 nullable)
+  published Boolean  @default(false)                 // 공개 여부 (기본값: 비공개)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  // ───── 관계 설정 ─────
+  authorId  Int                                      // FK: User의 id를 참조
+  author    User     @relation(fields: [authorId], references: [id])
+
+  tags      Tag[]    @relation("PostTags")           // 다대다 관계
+}
+
+// User 모델 = DB의 users 테이블이 됨
+model User {
+  id        Int      @id @default(autoincrement())  // 자동 증가 PK
+  email     String   @unique                         // 유니크 제약조건
+  name      String                                   // 필수 필드
+  password  String                                   // 해싱된 비밀번호 (평문 절대 X)
+  createdAt DateTime @default(now())                 // 생성 시 자동 기록
+  updatedAt DateTime @updatedAt                      // 수정 시 자동 갱신
+
+  posts     Post[]  
+}
+
+model Tag {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  posts Post[] @relation("PostTags")
+}
