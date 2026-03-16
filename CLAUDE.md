@@ -84,7 +84,7 @@
 - `interface User extends CreateUserInput`으로 스키마 타입 재사용
 - curl 테스트 6종 전체 통과: 정상 생성, 빈 이름, 잘못된 이메일, 복합 에러, 초과 필드 strip, body 없음
 
-### [진행중] Chapter 4: Prisma ORM + 데이터베이스 (`chapter4/`)
+### [완료] Chapter 4: Prisma ORM + 데이터베이스 (`chapter4/`)
 
 **Prisma ORM 기초**
 - **Prisma의 3가지 구성요소**: `schema.prisma`(모델 정의) → `prisma migrate dev`(DB 테이블 생성) → `prisma generate`(TypeScript 타입 생성)
@@ -106,15 +106,22 @@
 - `getUserById()`를 `updateUser()`와 `deleteUser()`에서 재사용: 존재 확인 로직 중복 제거
 - 리팩토링 전 `app.ts`(119줄, 모든 게 섞임) → 리팩토링 후 역할별 5개 파일로 분리
 
+**SQLite → PostgreSQL 전환**
+- `datasource db`의 provider를 `sqlite` → `postgresql`로 변경
+- Docker로 PostgreSQL 컨테이너 실행하여 로컬 DB 구성
+- `DATABASE_URL` 환경변수를 PostgreSQL 연결 문자열로 변경
+
+**관계형 모델 (1:N, N:M)**
+- **1:N 관계**: User → Post (한 유저가 여러 게시글 작성) — `@relation(fields: [authorId], references: [id])`
+- **N:M 관계**: Post ↔ Tag (게시글과 태그의 다대다) — 암시적 중간 테이블 자동 생성
+- `include`로 관계 데이터 함께 조회, `connect`로 기존 레코드 연결
+- Post 모델에 `published`, `content?`(nullable) 등 실무적 필드 설계
+
 ---
 
 ## 다음 학습 목표
 
-### [다음] Chapter 4 남은 내용
-- SQLite → PostgreSQL 전환
-- 관계형 모델 (1:N, N:M 관계)
-
-### [예정] Chapter 5: JWT 인증 & 보안
+### [다음] Chapter 5: JWT 인증 & 보안
 - `jsonwebtoken` 토큰 발급 / 검증
 - bcrypt 비밀번호 해싱
 - helmet, cors, rate limiting
@@ -178,3 +185,4 @@
 | 2026-03-08 | Chapter 3 에러 핸들링 & 환경변수 완료 기록. Zod 검증은 다음 세션에서 이어서 진행. |
 | 2026-03-09 | Chapter 3-Zod 완료 기록. Zod 입력 검증 전체 학습 완료 (스키마, safeParse, 검증 미들웨어, 리팩토링, 테스트 6종). 자동 업데이트 규칙 추가. |
 | 2026-03-13 | Chapter 4 Prisma ORM 기초 + Controller/Service/Repository 3-레이어 분리 학습 기록. app.ts(119줄)→역할별 5개 파일 리팩토링 완료. curl 테스트 7종 통과. |
+| 2026-03-15 | Chapter 4 완료 (PostgreSQL 전환 + 관계형 모델 1:N, N:M). Chapter 5 JWT 인증 시작. |
