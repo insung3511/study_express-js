@@ -9,7 +9,7 @@
 
 - 4월 인턴십을 앞두고 Express.js + TypeScript 실무 역량을 키우는 중
 - 목표: 미니 프로젝트를 혼자 설계·구현할 수 있는 수준으로 빠르게 끌어올리기
-- 현재 날짜: 2026-03-13 기준으로 약 3주 남음
+- 현재 날짜: 2026-03-18 기준으로 약 2.5주 남음 (인턴십 4/6 시작)
 - 스터디 방식: Claude와 함께 코드 작성 → 개념 설명 → 실습 반복
 
 ---
@@ -117,19 +117,44 @@
 - `include`로 관계 데이터 함께 조회, `connect`로 기존 레코드 연결
 - Post 모델에 `published`, `content?`(nullable) 등 실무적 필드 설계
 
+### [완료] Chapter 5: JWT 인증 (`chapter5/`)
+- **bcrypt**: `bcrypt.hash(평문, saltRounds)`로 비밀번호 해싱, `bcrypt.compare()`로 검증
+- **JWT**: `jwt.sign(payload, secret, { expiresIn })`로 토큰 발급, `jwt.verify(token, secret)`로 검증
+- **TokenPayload**: JWT payload에 userId만 담는 최소 설계
+- **register**: 이메일 중복 체크 → bcrypt 해싱 → 유저 생성 → JWT 발급 → 비밀번호 제외 응답
+- **login**: 이메일 조회 → bcrypt.compare() 비교 → JWT 발급 → 비밀번호 제외 응답
+- **authenticate 미들웨어**: Authorization 헤더에서 `Bearer 토큰` 추출 → `verifyToken()` → `req.userId` 주입
+- **JWT_SECRET**: `.env`에서 로드, 미설정 시 서버 시작 시 에러throw
+- **TokenPayload 타입**: `jwt.verify()`의 반환 타입 (type casting 필요)
+
 ---
 
-## 다음 학습 목표
+## 수정된 커리큘럼 (2026-03-18 확정)
 
-### [다음] Chapter 5: JWT 인증 & 보안
-- `jsonwebtoken` 토큰 발급 / 검증
-- bcrypt 비밀번호 해싱
-- helmet, cors, rate limiting
+### Phase 1: 개념 학습 (3/18 ~ 3/31, 8세션, ~8.5시간)
 
-### [예정] Chapter 6: 미니 프로젝트 (혼자 구현)
-- 학습자가 혼자 API를 설계하고 구현
-- Claude는 막히는 부분에만 개입
-- Jest + Supertest 테스트, Swagger 문서화
+| 세션 | 주제 | 시간 | 상태 |
+|------|------|------|------|
+| 1 | Ch5 JWT 정리 마무리 | 45분 | ⬜ 예정 |
+| 2 | Jest + Supertest ① 설정 + 첫 API 테스트 | 1.5시간 | ⬜ 예정 |
+| 3 | Jest + Supertest ② Mock + 단위 테스트 | 1시간 | ⬜ 예정 |
+| 4 | helmet / cors / rate-limit | 45분 | ⬜ 예정 |
+| 5 | Swagger/OpenAPI ① 설정 | 1시간 | ⬜ 예정 |
+| 6 | Swagger/OpenAPI ② 실전 적용 | 1시간 | ⬜ 예정 |
+| 7 | Logging (winston) | 45분 | ⬜ 예정 |
+| 8 | 미니 프로젝트 사전 설계 (ERD + 엔드포인트 정의) | 1.5시간 | ⬜ 예정 |
+
+### Phase 2: 미니 프로젝트 — 일정/예약 관리 API (4/1 ~ 4/5, 5일)
+
+| 날짜 | 내용 |
+|------|------|
+| 4/1 | 프로젝트 초기화 + Prisma 모델 + 기본 CRUD |
+| 4/2 | JWT 인증 연동 + 권한 분리 |
+| 4/3 | 비즈니스 로직 구현 (예약 충돌 검증 등) |
+| 4/4 | 테스트 작성 + Swagger 문서화 |
+| 4/5 | 마무리 + 전체 점검 + README 작성 |
+
+### 인턴십 시작: 4/6
 
 ---
 
@@ -171,7 +196,7 @@
 }
 ```
 
-앞으로 추가 예정: `prisma`, `jsonwebtoken`, `bcrypt`, `jest`, `supertest`
+앞으로 추가 예정: `jest`, `supertest`, `helmet`, `cors`, `express-rate-limit`, `swagger-jsdoc`, `swagger-ui-express`, `winston`
 
 ---
 
@@ -186,3 +211,4 @@
 | 2026-03-09 | Chapter 3-Zod 완료 기록. Zod 입력 검증 전체 학습 완료 (스키마, safeParse, 검증 미들웨어, 리팩토링, 테스트 6종). 자동 업데이트 규칙 추가. |
 | 2026-03-13 | Chapter 4 Prisma ORM 기초 + Controller/Service/Repository 3-레이어 분리 학습 기록. app.ts(119줄)→역할별 5개 파일 리팩토링 완료. curl 테스트 7종 통과. |
 | 2026-03-15 | Chapter 4 완료 (PostgreSQL 전환 + 관계형 모델 1:N, N:M). Chapter 5 JWT 인증 시작. |
+| 2026-03-18 | 커리큘럼 전면 수정. Phase 1(8세션) + Phase 2(미니 프로젝트 5일) 확정. JWT 코드 직접 작성 완료 확인. Git 워크플로우·Docker·Refresh Token 제외. |
