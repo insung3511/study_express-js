@@ -34,10 +34,10 @@
 
 | 세션 | 주제 | 핵심 개념 | 상태 |
 |------|------|-----------|------|
-| 1 | Ch5 JWT 정리 마무리 | 토큰 발급/검증, bcrypt 해싱, authenticate 미들웨어 복습 | ⬜ 예정 |
-| 2 | Jest + Supertest ① | 설치, 설정, 첫 API 테스트 작성 | ⬜ 예정 |
-| 3 | Jest + Supertest ② | Mock 패턴, Service 단위 테스트 | ⬜ 예정 |
-| 4 | helmet / cors / rate-limit | 보안 헤더 설정, 요청 속도 제한 | ⬜ 예정 |
+| 1 | Ch5 JWT 정리 마무리 | 토큰 발급/검증, bcrypt 해싱, authenticate 미들웨어 복습 | ✅ 완료 |
+| 2 | Jest + Supertest ① | 설치, 설정, 첫 API 테스트 작성 | ✅ 완료 |
+| 3 | Jest + Supertest ② | Mock 패턴, Service 단위 테스트 | ✅ 완료 |
+| 4 | helmet / cors / rate-limit | 보안 헤더 설정, 요청 속도 제한 | ✅ 완료 |
 | 5 | Swagger/OpenAPI ① | swagger-jsdoc + swagger-ui-express 설정 | ⬜ 예정 |
 | 6 | Swagger/OpenAPI ② | 기존 API 전체 문서화 적용 | ⬜ 예정 |
 | 7 | Logging (winston) | 구조화된 로깅, 로그 레벨 | ⬜ 예정 |

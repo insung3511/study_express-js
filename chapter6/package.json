@@ -1,7 +1,7 @@
 {
-  "name": "chapter4-prisma",
+  "name": "chapter6-security",
   "version": "1.0.0",
-  "description": "Chapter 4: Prisma ORM + Database",
+  "description": "Chapter 6: helmet + cors + express-rate-limit",
   "type": "commonjs",
   "scripts": {
     "build": "tsc",

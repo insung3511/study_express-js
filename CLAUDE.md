@@ -117,6 +117,13 @@
 - `include`로 관계 데이터 함께 조회, `connect`로 기존 레코드 연결
 - Post 모델에 `published`, `content?`(nullable) 등 실무적 필드 설계
 
+### [완료] Chapter 6: 보안 미들웨어 (`chapter6/`)
+- **helmet**: `app.use(helmet())` 한 줄로 CSP, HSTS, X-Frame-Options 등 보안 헤더 자동 설정, `X-Powered-By` 제거
+- **cors**: `cors({ origin })` 으로 허용된 출처만 API 호출 가능, `Access-Control-Allow-Origin` 헤더 자동 부착
+- **express-rate-limit**: `rateLimit({ windowMs, limit })` 으로 IP당 요청 횟수 제한, 초과 시 `429 Too Many Requests`
+- rate-limit은 전체 앱이 아닌 라우터 단위로 적용: `app.use('/auth', authLimiter, authRouter)`
+- CORS의 동일 출처 정책(Same-Origin Policy) 이해, Preflight(OPTIONS) 요청 동작 원리
+
 ### [완료] Chapter 5: JWT 인증 (`chapter5/`)
 - **bcrypt**: `bcrypt.hash(평문, saltRounds)`로 비밀번호 해싱, `bcrypt.compare()`로 검증
 - **JWT**: `jwt.sign(payload, secret, { expiresIn })`로 토큰 발급, `jwt.verify(token, secret)`로 검증
@@ -135,10 +142,10 @@
 
 | 세션 | 주제 | 시간 | 상태 |
 |------|------|------|------|
-| 1 | Ch5 JWT 정리 마무리 | 45분 | ⬜ 예정 |
-| 2 | Jest + Supertest ① 설정 + 첫 API 테스트 | 1.5시간 | ⬜ 예정 |
-| 3 | Jest + Supertest ② Mock + 단위 테스트 | 1시간 | ⬜ 예정 |
-| 4 | helmet / cors / rate-limit | 45분 | ⬜ 예정 |
+| 1 | Ch5 JWT 정리 마무리 | 45분 | ✅ 완료 |
+| 2 | Jest + Supertest ① 설정 + 첫 API 테스트 | 1.5시간 | ✅ 완료 |
+| 3 | Jest + Supertest ② Mock + 단위 테스트 | 1시간 | ✅ 완료 |
+| 4 | helmet / cors / rate-limit | 45분 | ✅ 완료 |
 | 5 | Swagger/OpenAPI ① 설정 | 1시간 | ⬜ 예정 |
 | 6 | Swagger/OpenAPI ② 실전 적용 | 1시간 | ⬜ 예정 |
 | 7 | Logging (winston) | 45분 | ⬜ 예정 |
