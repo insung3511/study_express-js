@@ -5,3 +5,5 @@ dist/
 .DS_Store
 chapter4/prisma/dev.db
 docs/
+.omc/
+.sisyphus/
