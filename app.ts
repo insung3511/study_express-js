@@ -1,4 +1,5 @@
 import express, { Request, Response } from 'express';
+import logger from './chapter7/src/lib/logger';
 
 const app = express();
 const port: number = 3000;
@@ -24,6 +25,7 @@ let users: User[] = [
 // 테스트: 브라우저에서 http://localhost:3000/users
 // ============================================
 app.get('/users', (req: Request, res: Response) => {
+	logger.info('전체 유저 목록 조회');
 	res.json(users);
 });
 
@@ -32,13 +34,16 @@ app.get('/users', (req: Request, res: Response) => {
 // 테스트: http://localhost:3000/users/1
 // ============================================
 app.get('/users/:id', (req: Request, res: Response) => {
+	logger.info(`유저 단건 조회: ${req.params.id}`);
 	const id = parseInt(req.params.id as string);
 	const user = users.find(u => u.id === id);
 
 	if (!user) {
 		res.status(404).json({ message: '유저를 찾을 수 없습니다' });
+		logger.warn(`유저 ${id} 조회 실패 - 존재하지 않음`);
 		return;
 	}
+	logger.info(`유저 ${id} 조회 성공`);
 	res.json(user);
 });
 
@@ -51,10 +56,12 @@ app.get('/users/search', (req: Request, res: Response) => {
 
 	if (!name) {
 		res.status(400).json({ message: 'name 파라미터가 필요합니다' });
+		logger.warn('name 파라미터가 없습니다');
 		return;
 	}
 
 	const result = users.filter(u => u.name.includes(name));
+	logger.info(`유저 검색: ${name}`);
 	res.json(result);
 });
 
@@ -69,6 +76,7 @@ app.post('/users', (req: Request, res: Response) => {
 
 	if (!name || !email) {
 		res.status(400).json({ message: 'name과 email은 필수입니다' });
+		logger.warn('name 또는 email이 없습니다');
 		return;
 	}
 
@@ -78,6 +86,7 @@ app.post('/users', (req: Request, res: Response) => {
 		email,
 	};
 	users.push(newUser);
+	logger.info(`유저 생성: ${newUser.name}`);
 	res.status(201).json(newUser);
 });
 
@@ -93,11 +102,13 @@ app.put('/users/:id', (req: Request, res: Response) => {
 
 	if (index === -1) {
 		res.status(404).json({ message: '유저를 찾을 수 없습니다' });
+		logger.warn(`유저 ${id} 수정 실패 - 존재하지 않음`);
 		return;
 	}
 
 	const { name, email } = req.body;
 	users[index] = { id, name, email };
+	logger.info(`유저 ${id} 수정 성공`);
 	res.json(users[index]);
 });
 
@@ -113,10 +124,12 @@ app.patch('/users/:id', (req: Request, res: Response) => {
 
 	if (index === -1) {
 		res.status(404).json({ message: '유저를 찾을 수 없습니다' });
+		logger.warn(`유저 ${id} 패치 실패 - 존재하지 않음`);
 		return;
 	}
 
 	users[index] = { ...users[index], ...req.body };
+	logger.info(`유저 ${id} 패치 성공`);
 	res.json(users[index]);
 });
 
@@ -130,10 +143,12 @@ app.delete('/users/:id', (req: Request, res: Response) => {
 
 	if (index === -1) {
 		res.status(404).json({ message: '유저를 찾을 수 없습니다' });
+		logger.warn(`유저 ${id} 삭제 실패 - 존재하지 않음`);
 		return;
 	}
 
 	const deleted = users.splice(index, 1);
+	logger.info(`유저 ${id} 삭제 성공`);
 	res.json({ message: '삭제 완료', user: deleted[0] });
 });
 
@@ -142,20 +157,25 @@ app.delete('/users/:id', (req: Request, res: Response) => {
 // ============================================
 app.route('/posts')
 	.get((req: Request, res: Response) => {
+		logger.info('게시글 목록 조회');
 		res.json({ message: 'GET: 게시글 목록 조회' });
 	})
 	.post((req: Request, res: Response) => {
+		logger.info('게시글 생성');
 		res.json({ message: 'POST: 게시글 생성', data: req.body });
 	});
 
 app.route('/posts/:id')
 	.get((req: Request, res: Response) => {
+		logger.info(`게시글 ${req.params.id} 조회`);
 		res.json({ message: `GET: 게시글 ${req.params.id} 조회` });
 	})
 	.put((req: Request, res: Response) => {
+		logger.info(`게시글 ${req.params.id} 수정`);
 		res.json({ message: `PUT: 게시글 ${req.params.id} 수정`, data: req.body });
 	})
 	.delete((req: Request, res: Response) => {
+		logger.info(`게시글 ${req.params.id} 삭제`);
 		res.json({ message: `DELETE: 게시글 ${req.params.id} 삭제` });
 	});
 
